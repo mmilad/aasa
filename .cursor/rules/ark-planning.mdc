@@ -1,0 +1,16 @@
+---
+description: Maintain the plan/ wiki, index, log, and done ledgers consistently.
+globs: plan/**
+alwaysApply: false
+---
+
+# ARK server manager — planning tree
+
+When editing files under `plan/`:
+
+1. **Bootstrap**: Read [plan/README.md](plan/README.md) then [plan/WIKI_SCHEMA.md](plan/WIKI_SCHEMA.md) before large or structural edits.
+2. **Index**: After adding a substantive page under `plan/wiki/` or `plan/product/`, update [plan/index.md](plan/index.md) (one-line summary + category).
+3. **Log**: Append [plan/log.md](plan/log.md) for material ingests, decisions, or lint passes using the header format described in that file.
+4. **Done**: When a planning task is fully closed (ADR accepted, spec updated, or question removed with evidence), add a row to [plan/done.md](plan/done.md) with links.
+5. **Secrets**: Never commit secrets into `plan/`; use env var names or secret-store patterns only.
+6. **Gate**: Follow [plan/meta/how-we-plan.md](plan/meta/how-we-plan.md) **Gate status** table; if any gate is not `done`, treat implementation as blocked until evidence is restored. When all gates are `done`, follow [plan/wiki/implementation-backbone.md](plan/wiki/implementation-backbone.md) for coding order.
