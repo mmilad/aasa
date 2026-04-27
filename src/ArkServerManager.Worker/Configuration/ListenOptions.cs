@@ -1,0 +1,8 @@
+namespace ArkServerManager.Worker.Configuration;
+
+public sealed class ListenOptions
+{
+    public const string SectionName = "Listen";
+    public bool Public { get; set; }
+    public int Port { get; set; } = 5080;
+}
