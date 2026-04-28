@@ -1,0 +1,8 @@
+.dotnet/
+.dotnet-tools/
+dotnet-install.sh
+.localdata/
+**/bin/
+**/obj/
+appsettings.Local.json
+*.user

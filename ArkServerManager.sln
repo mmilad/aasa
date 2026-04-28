@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{E87B4A71-D1C1-4571-9AE2-9802778F2E52}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArkServerManager.Worker", "src\ArkServerManager.Worker\ArkServerManager.Worker.csproj", "{18CB9B5B-FA5E-42C6-BF0F-CC43BECAF1AA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{9828D1E2-1DF2-4DD2-81FE-48CF2F6EADC8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArkServerManager.Worker.Tests", "tests\ArkServerManager.Worker.Tests\ArkServerManager.Worker.Tests.csproj", "{D0012B96-4522-4599-8E2A-A2051169425B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{18CB9B5B-FA5E-42C6-BF0F-CC43BECAF1AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18CB9B5B-FA5E-42C6-BF0F-CC43BECAF1AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18CB9B5B-FA5E-42C6-BF0F-CC43BECAF1AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18CB9B5B-FA5E-42C6-BF0F-CC43BECAF1AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0012B96-4522-4599-8E2A-A2051169425B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0012B96-4522-4599-8E2A-A2051169425B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0012B96-4522-4599-8E2A-A2051169425B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0012B96-4522-4599-8E2A-A2051169425B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{18CB9B5B-FA5E-42C6-BF0F-CC43BECAF1AA} = {E87B4A71-D1C1-4571-9AE2-9802778F2E52}
+		{D0012B96-4522-4599-8E2A-A2051169425B} = {9828D1E2-1DF2-4DD2-81FE-48CF2F6EADC8}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,15 @@
+﻿{
+  "$schema": "http://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "ArkServerManager.Worker": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "environmentVariables": {
+        "ARKMGR_APIAUTH__APIKEY": "DEV_LOCAL_ONLY_CHANGE_ME",
+        "ARKMGR_DATABASE__PROVIDER": "Sqlite",
+        "ARKMGR_MANAGERPATHS__MANAGERDATAROOT": "/workspace/.localdata/arkmgr",
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
