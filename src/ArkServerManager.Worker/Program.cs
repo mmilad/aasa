@@ -22,6 +22,8 @@ builder.Configuration.AddEnvironmentVariables(prefix: "ARKMGR_");
 builder.Services.Configure<DatabaseOptions>(builder.Configuration.GetSection(DatabaseOptions.SectionName));
 builder.Services.Configure<ApiAuthOptions>(builder.Configuration.GetSection(ApiAuthOptions.SectionName));
 builder.Services.Configure<ListenOptions>(builder.Configuration.GetSection(ListenOptions.SectionName));
+builder.Services.Configure<SteamCmdOptions>(builder.Configuration.GetSection(SteamCmdOptions.SectionName));
+builder.Services.Configure<ProcessSupervisorOptions>(builder.Configuration.GetSection(ProcessSupervisorOptions.SectionName));
 builder.Services.Configure<ManagerPathsOptions>(options =>
 {
     var configured = builder.Configuration.GetValue<string>("ManagerPaths:ManagerDataRoot");
@@ -78,8 +80,8 @@ builder.Services.AddScoped<IServerApplicationService, ServerApplicationService>(
 builder.Services.AddScoped<IIniConfigurationService, IniConfigurationService>();
 builder.Services.AddSingleton<IDataDirectoryService, DataDirectoryService>();
 builder.Services.AddSingleton<IPortAvailabilityService, PortAvailabilityService>();
-builder.Services.AddScoped<ISteamCmdClient, FakeSteamCmdClient>();
-builder.Services.AddScoped<IProcessSupervisor, FakeProcessSupervisor>();
+builder.Services.AddScoped<ISteamCmdClient, SteamCmdClient>();
+builder.Services.AddScoped<IProcessSupervisor, ProcessSupervisor>();
 builder.Services.AddHostedService<WorkerHealthBeaconService>();
 
 builder.Services.AddEndpointsApiExplorer();
