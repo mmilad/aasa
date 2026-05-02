@@ -52,7 +52,7 @@ public sealed class WorkerApiClient(HttpClient httpClient)
             if (response.IsSuccessStatusCode)
             {
                 var model = await response.Content.ReadFromJsonAsync<T>(JsonOptions, cancellationToken);
-                return new ApiClientResponse<T>(response.StatusCode, model, error: null);
+                return new ApiClientResponse<T>(response.StatusCode, model, Error: null);
             }
 
             var apiError = await ParseErrorAsync(response, cancellationToken);
