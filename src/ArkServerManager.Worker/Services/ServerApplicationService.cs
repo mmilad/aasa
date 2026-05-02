@@ -3,6 +3,7 @@ using ArkServerManager.Worker.Data.Entities;
 using ArkServerManager.Worker.Data.Repositories;
 using ArkServerManager.Worker.Domain;
 using ArkServerManager.Worker.Infrastructure;
+using Microsoft.Extensions.Logging;
 
 namespace ArkServerManager.Worker.Services;
 
@@ -18,6 +19,12 @@ public interface IServerApplicationService
         Guid serverId,
         JobType jobType,
         CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Runs work for a job that was persisted as <see cref="JobStatus.Running"/> and queued by <see cref="EnqueueJobAsync"/>.
+    /// </summary>
+    Task ProcessQueuedJobAsync(Guid jobId, CancellationToken cancellationToken = default);
+
     Task<JobEntity?> GetJobAsync(Guid jobId, CancellationToken cancellationToken = default);
     Task<LogsResponse?> GetLogsAsync(Guid serverId, int tail, CancellationToken cancellationToken = default);
 }
@@ -28,7 +35,9 @@ public sealed class ServerApplicationService(
     IDataDirectoryService dataDirectoryService,
     IPortAvailabilityService portAvailabilityService,
     ISteamCmdClient steamCmdClient,
-    IProcessSupervisor processSupervisor) : IServerApplicationService
+    IProcessSupervisor processSupervisor,
+    IJobWorkQueue jobWorkQueue,
+    ILogger<ServerApplicationService> logger) : IServerApplicationService
 {
     private const int DefaultGamePort = 7777;
     private const int DefaultQueryPort = 27015;
@@ -163,14 +172,44 @@ public sealed class ServerApplicationService(
         await jobRepository.SaveChangesAsync(cancellationToken);
         await serverRepository.SaveChangesAsync(cancellationToken);
 
-        var runResult = await ExecuteJobAsync(jobType, serverId, cancellationToken);
-        job.Status = runResult.ExitCode is 0 ? JobStatus.Done : JobStatus.Failed;
-        job.ExitCode = runResult.ExitCode;
-        job.LogBlob = runResult.Log;
-        job.FinishedAtUtc = DateTime.UtcNow;
-        await jobRepository.SaveChangesAsync(cancellationToken);
+        // Do not pass the HTTP request token: the client disconnects after 202 while work continues.
+        await jobWorkQueue.EnqueueAsync(job.Id, CancellationToken.None);
 
         return (job, null);
+    }
+
+    public async Task ProcessQueuedJobAsync(Guid jobId, CancellationToken cancellationToken = default)
+    {
+        var job = await jobRepository.GetTrackedAsync(jobId, cancellationToken);
+        if (job is null)
+        {
+            logger.LogWarning("Queued job {JobId} was not found; skipping.", jobId);
+            return;
+        }
+
+        if (job.Status != JobStatus.Running)
+        {
+            return;
+        }
+
+        try
+        {
+            var runResult = await ExecuteJobAsync(job.Type, job.ServerId, cancellationToken);
+            job.Status = runResult.ExitCode is 0 ? JobStatus.Done : JobStatus.Failed;
+            job.ExitCode = runResult.ExitCode;
+            job.LogBlob = runResult.Log;
+            job.FinishedAtUtc = DateTime.UtcNow;
+        }
+        catch (Exception exception) when (!cancellationToken.IsCancellationRequested)
+        {
+            logger.LogError(exception, "Job {JobId} failed with an exception.", jobId);
+            job.Status = JobStatus.Failed;
+            job.ExitCode = 1;
+            job.LogBlob = exception.ToString();
+            job.FinishedAtUtc = DateTime.UtcNow;
+        }
+
+        await jobRepository.SaveChangesAsync(cancellationToken);
     }
 
     private async Task<(int ExitCode, string? Log)> ExecuteJobAsync(

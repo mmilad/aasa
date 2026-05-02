@@ -82,6 +82,9 @@ builder.Services.AddSingleton<IDataDirectoryService, DataDirectoryService>();
 builder.Services.AddSingleton<IPortAvailabilityService, PortAvailabilityService>();
 builder.Services.AddScoped<ISteamCmdClient, SteamCmdClient>();
 builder.Services.AddScoped<IProcessSupervisor, ProcessSupervisor>();
+builder.Services.AddSingleton<ChannelJobWorkQueue>();
+builder.Services.AddSingleton<IJobWorkQueue>(static sp => sp.GetRequiredService<ChannelJobWorkQueue>());
+builder.Services.AddHostedService<JobProcessorHostedService>();
 builder.Services.AddHostedService<WorkerHealthBeaconService>();
 
 builder.Services.AddEndpointsApiExplorer();

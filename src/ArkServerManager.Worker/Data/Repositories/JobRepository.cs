@@ -13,6 +13,11 @@ public sealed class JobRepository(AppDbContext dbContext) : IJobRepository
             .FirstOrDefaultAsync(x => x.Id == jobId, cancellationToken);
     }
 
+    public async Task<JobEntity?> GetTrackedAsync(Guid jobId, CancellationToken cancellationToken = default)
+    {
+        return await dbContext.Jobs.FirstOrDefaultAsync(x => x.Id == jobId, cancellationToken);
+    }
+
     public async Task<JobEntity> AddAsync(JobEntity entity, CancellationToken cancellationToken = default)
     {
         var created = await dbContext.Jobs.AddAsync(entity, cancellationToken);

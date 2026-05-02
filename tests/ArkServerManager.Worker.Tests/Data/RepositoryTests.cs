@@ -122,6 +122,57 @@ public sealed class RepositoryTests
         Assert.False(await jobRepo.HasRunningInstallAsync());
     }
 
+    [Fact]
+    public async Task JobRepository_GetTrackedAsync_AllowsStatusUpdate()
+    {
+        await using var fixture = await SqliteFixture.CreateAsync();
+        var serverRepo = new ServerRepository(fixture.DbContext);
+        var jobRepo = new JobRepository(fixture.DbContext);
+
+        var server = new ServerEntity
+        {
+            Id = Guid.NewGuid(),
+            Name = "Tracked Job Server",
+            CreatedAtUtc = DateTime.UtcNow,
+            UpdatedAtUtc = DateTime.UtcNow,
+            State = ServerState.Stopped,
+            InstallRoot = "/tmp/servers/tracked/binaries",
+            GamePort = 7780,
+            QueryPort = 27018,
+            RconPort = 27023,
+            RconPassword = "placeholder",
+            MapName = "TheIsland_WP",
+            SessionName = "Tracked Session",
+        };
+
+        await serverRepo.AddAsync(server);
+        await serverRepo.SaveChangesAsync();
+
+        var job = new JobEntity
+        {
+            Id = Guid.NewGuid(),
+            ServerId = server.Id,
+            Type = JobType.Start,
+            Status = JobStatus.Running,
+            CreatedAtUtc = DateTime.UtcNow,
+            StartedAtUtc = DateTime.UtcNow,
+        };
+
+        await jobRepo.AddAsync(job);
+        await jobRepo.SaveChangesAsync();
+
+        var tracked = await jobRepo.GetTrackedAsync(job.Id);
+        Assert.NotNull(tracked);
+        tracked!.Status = JobStatus.Done;
+        tracked.FinishedAtUtc = DateTime.UtcNow;
+        await jobRepo.SaveChangesAsync();
+
+        var readOnly = await jobRepo.GetAsync(job.Id);
+        Assert.NotNull(readOnly);
+        Assert.Equal(JobStatus.Done, readOnly!.Status);
+        Assert.NotNull(readOnly.FinishedAtUtc);
+    }
+
     private sealed class SqliteFixture : IAsyncDisposable
     {
         private readonly SqliteConnection _connection;

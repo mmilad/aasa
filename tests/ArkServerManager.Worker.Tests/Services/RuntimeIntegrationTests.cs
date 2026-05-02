@@ -121,7 +121,9 @@ public sealed class RuntimeIntegrationTests
             new NoOpDataDirectoryService(),
             new AlwaysAvailablePortService(),
             new NoOpSteamCmdClient(),
-            new NoOpProcessSupervisor());
+            new NoOpProcessSupervisor(),
+            new NoOpJobWorkQueue(),
+            NullLogger<ServerApplicationService>.Instance);
 
         var result = await service.EnqueueJobAsync(serverId, JobType.InstallOrUpdate);
 
@@ -129,6 +131,48 @@ public sealed class RuntimeIntegrationTests
         Assert.NotNull(result.Error);
         Assert.Equal("SERVER_NOT_STOPPED", result.Error!.Code);
         Assert.Empty(jobRepository.Jobs);
+    }
+
+    [Fact]
+    public async Task EnqueueStartJob_CompletesInline_WhenQueueInvokesProcessorImmediately()
+    {
+        var serverId = Guid.NewGuid();
+        var server = new ServerEntity
+        {
+            Id = serverId,
+            Name = "Async Job Test",
+            CreatedAtUtc = DateTime.UtcNow,
+            UpdatedAtUtc = DateTime.UtcNow,
+            State = ServerState.Stopped,
+            InstallRoot = @"C:\Ark\servers\abc\binaries",
+            GamePort = 7777,
+            QueryPort = 27015,
+            RconPort = 27020,
+            RconPassword = "placeholder",
+            MapName = "TheIsland_WP",
+            SessionName = "Session",
+        };
+
+        var serverRepository = new InMemoryServerRepository(server);
+        var jobRepository = new InMemoryJobRepository();
+        var queue = new ImmediateJobWorkQueue();
+        var service = new ServerApplicationService(
+            serverRepository,
+            jobRepository,
+            new NoOpDataDirectoryService(),
+            new AlwaysAvailablePortService(),
+            new NoOpSteamCmdClient(),
+            new NoOpProcessSupervisor(),
+            queue,
+            NullLogger<ServerApplicationService>.Instance);
+        queue.Bind(service);
+
+        var (job, error) = await service.EnqueueJobAsync(serverId, JobType.Start);
+
+        Assert.Null(error);
+        Assert.NotNull(job);
+        Assert.Equal(JobStatus.Done, job!.Status);
+        Assert.Equal(0, job.ExitCode);
     }
 
     private sealed class InMemoryServerRepository(ServerEntity? server) : IServerRepository
@@ -183,6 +227,11 @@ public sealed class RuntimeIntegrationTests
             return Task.FromResult(_jobs.FirstOrDefault(x => x.Id == jobId));
         }
 
+        public Task<JobEntity?> GetTrackedAsync(Guid jobId, CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult(_jobs.FirstOrDefault(x => x.Id == jobId));
+        }
+
         public Task<JobEntity> AddAsync(JobEntity entity, CancellationToken cancellationToken = default)
         {
             _jobs.Add(entity);
@@ -222,6 +271,26 @@ public sealed class RuntimeIntegrationTests
     private sealed class AlwaysAvailablePortService : IPortAvailabilityService
     {
         public bool IsAvailable(int port) => true;
+    }
+
+    private sealed class NoOpJobWorkQueue : IJobWorkQueue
+    {
+        public ValueTask EnqueueAsync(Guid jobId, CancellationToken cancellationToken = default) => ValueTask.CompletedTask;
+    }
+
+    /// <summary>
+    /// Invokes <see cref="IServerApplicationService.ProcessQueuedJobAsync"/> synchronously (tests / single-threaded scenarios).
+    /// </summary>
+    private sealed class ImmediateJobWorkQueue : IJobWorkQueue
+    {
+        private IServerApplicationService? _app;
+
+        public void Bind(IServerApplicationService app) => _app = app;
+
+        public async ValueTask EnqueueAsync(Guid jobId, CancellationToken cancellationToken = default)
+        {
+            await _app!.ProcessQueuedJobAsync(jobId, cancellationToken);
+        }
     }
 
     private sealed class NoOpSteamCmdClient : ISteamCmdClient

@@ -6,7 +6,7 @@ When implementation starts, follow this **order** so each step has **inputs** (d
 
 1. Confirm [meta/how-we-plan.md](../../meta/how-we-plan.md) **Gate status** shows all gates satisfied (or explicitly waived with ADR).
 2. Read [tech-stack.md](tech-stack.md), [data-layout-windows.md](data-layout-windows.md), [mvp-scope.md](../requirements/mvp-scope.md), [persistence-providers.md](architecture/persistence-providers.md), [agent-execution-conventions.md](meta/agent-execution-conventions.md).
-3. Read ADRs: [ADR-0001](../decisions/ADR-0001-host-and-deployment.md), [ADR-0003](../decisions/ADR-0003-secrets-and-exposure.md), [ADR-0002](../decisions/ADR-0002-plugin-integration.md) (deferred scope).
+3. Read ADRs: [ADR-0001](../decisions/ADR-0001-host-and-deployment.md), [ADR-0003](../decisions/ADR-0003-secrets-and-exposure.md), [ADR-0002](../decisions/ADR-0002-plugin-integration.md) (deferred scope), [ADR-0004](../decisions/ADR-0004-local-admin-ui-blazor.md) (local Blazor admin).
 
 ## Phase C0 — Solution skeleton (first code milestone)
 
@@ -44,13 +44,24 @@ When implementation starts, follow this **order** so each step has **inputs** (d
 | C4.1 | INI read/write with backup | Matches [product/06-config-ini.md](../../product/06-config-ini.md) allowlist |
 | C4.2 | Backup zip job | [backup-mvp.md](../requirements/backup-mvp.md) + `POST .../jobs/backup` |
 
-## After C4 (hardening)
+## Phase C5 — Local Blazor admin UI
+
+Normative: [ADR-0004](../decisions/ADR-0004-local-admin-ui-blazor.md), product [09-ui.md](../../product/09-ui.md).
+
+| Step | Do | Done when |
+|------|-----|-----------|
+| C5.1 | New **Blazor Web App** project (Interactive Server), loopback bind default | `dotnet build`; README or `12-deployment.md` notes how to run Admin + Worker together in dev |
+| C5.2 | Typed `HttpClient` (or NSwag client from OpenAPI) to Worker `/api/v1` | API key supplied server-side per ADR-0003; no key in browser-delivered WASM as primary path |
+| C5.3 | Minimal screens | Server list + detail shell; enqueue **one** job type + poll `GET /jobs/{id}` until terminal state; matches [mvp-scope.md](../requirements/mvp-scope.md) success criterion 5 |
+
+## After C5 (hardening)
 
 Follow [production-readiness.md](../requirements/production-readiness.md) for PR-* phases before calling the product “production ready.”
 
-_Add phases C5+ only via ADR or mvp-scope revision._
+_Add phases C6+ only via ADR or mvp-scope revision._
 
 ## Sources
 
 - [mvp-scope.md](../requirements/mvp-scope.md)
+- [ADR-0004](../decisions/ADR-0004-local-admin-ui-blazor.md)
 - [architecture/evaluation.md](architecture/evaluation.md)

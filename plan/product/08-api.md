@@ -16,7 +16,7 @@ Migrated from the former consolidated implementation outline.
   - status
   - metrics
 
-**MVP v0.1:** normative contract — [api-v1-mvp.md](../wiki/requirements/api-v1-mvp.md) (route table, errors, auth). Auth per [ADR-0003](../wiki/decisions/ADR-0003-secrets-and-exposure.md). Broader surface (mods/jobs/players WebSocket) rolls in post–Phase C3 per [implementation-backbone.md](../wiki/implementation-backbone.md).
+**MVP v0.1:** normative contract — [api-v1-mvp.md](../wiki/requirements/api-v1-mvp.md) (route table, errors, auth). Auth per [ADR-0003](../wiki/decisions/ADR-0003-secrets-and-exposure.md). First-party **Blazor** admin consumes this API per [ADR-0004](../wiki/decisions/ADR-0004-local-admin-ui-blazor.md) (Phase C5 in [implementation-backbone.md](../wiki/implementation-backbone.md)). Broader surface (mods/jobs/players WebSocket) rolls in post–Phase C3 per backbone.
 
 ---
 
