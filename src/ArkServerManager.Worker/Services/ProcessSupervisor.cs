@@ -97,6 +97,8 @@ public sealed class ProcessSupervisor(
             return new ProcessExecutionResult(0, "Server process was not found; state reset to Stopped.");
         }
 
+        ArgumentNullException.ThrowIfNull(process);
+
         var output = new StringBuilder();
         server.State = ServerState.Stopping;
         server.UpdatedAtUtc = DateTime.UtcNow;
@@ -167,7 +169,7 @@ public sealed class ProcessSupervisor(
 
     public static string BuildExecutablePath(string installRoot)
     {
-        return Path.Combine(
+        return JoinWindowsGameLayoutPath(
             installRoot,
             "ShooterGame",
             "Binaries",
@@ -177,7 +179,20 @@ public sealed class ProcessSupervisor(
 
     public static string BuildWorkingDirectory(string installRoot)
     {
-        return Path.Combine(installRoot, "ShooterGame", "Binaries", "Win64");
+        return JoinWindowsGameLayoutPath(installRoot, "ShooterGame", "Binaries", "Win64");
+    }
+
+    /// <summary>
+    /// Joins install root and relative segments using backslashes so composed paths match Windows
+    /// layout regardless of host OS (Linux CI runs the same assertions as Windows).
+    /// </summary>
+    private static string JoinWindowsGameLayoutPath(string installRoot, params string[] segments)
+    {
+        var root = installRoot.TrimEnd('\\', '/');
+        var parts = new string[segments.Length + 1];
+        parts[0] = root;
+        Array.Copy(segments, 0, parts, 1, segments.Length);
+        return string.Join('\\', parts);
     }
 
     public static string BuildLaunchArguments(
