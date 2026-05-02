@@ -1,0 +1,157 @@
+@page "/servers/{ServerId:guid}"
+
+<PageTitle>Server Detail</PageTitle>
+
+<h1>Server detail</h1>
+
+@if (!string.IsNullOrWhiteSpace(_errorMessage))
+{
+    <div class="alert alert-error">@_errorMessage</div>
+}
+
+@if (_isLoading)
+{
+    <p>Loading server details...</p>
+}
+else if (_server is null)
+{
+    <p>Server not found.</p>
+}
+else
+{
+    <section class="panel">
+        <h2>@_server.Name</h2>
+        <dl>
+            <dt>State</dt>
+            <dd>@_server.State</dd>
+
+            <dt>Install Root</dt>
+            <dd>@_server.InstallRoot</dd>
+
+            <dt>Ports</dt>
+            <dd>Game @_server.GamePort, Query @_server.QueryPort, RCON @_server.RconPort</dd>
+        </dl>
+    </section>
+
+    <section class="panel">
+        <h3>Backup job</h3>
+        <p>Enqueue backup and poll until terminal status.</p>
+        <button @onclick="RunBackupAsync" disabled="@_isRunningJob">@(_isRunningJob ? "Running..." : "Run backup")</button>
+    </section>
+
+    @if (_job is not null)
+    {
+        <section class="panel">
+            <h3>Job status</h3>
+            <dl>
+                <dt>Job Id</dt>
+                <dd>@_job.Id</dd>
+
+                <dt>Status</dt>
+                <dd>@_job.Status</dd>
+
+                <dt>Exit code</dt>
+                <dd>@(_job.ExitCode?.ToString() ?? "(none)")</dd>
+            </dl>
+
+            <h4>Log excerpt</h4>
+            <pre>@TrimLog(_job.LogBlob)</pre>
+        </section>
+    }
+}
+
+<p><a href="/">Back to servers</a></p>
+
+@code {
+    [Parameter]
+    public Guid ServerId { get; set; }
+
+    [Inject]
+    public WorkerApiClient WorkerApi { get; set; } = default!;
+
+    private bool _isLoading = true;
+    private bool _isRunningJob;
+    private string? _errorMessage;
+    private ServerResponse? _server;
+    private JobResponse? _job;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _isLoading = true;
+        _errorMessage = null;
+        _job = null;
+
+        var response = await WorkerApi.GetServerAsync(ServerId, CancellationToken.None);
+        if (!response.IsSuccess || response.Value is null)
+        {
+            _errorMessage = AdminApiErrorDisplay.Describe(response.Error, response.StatusCode);
+            _server = null;
+            _isLoading = false;
+            return;
+        }
+
+        _server = response.Value;
+        _isLoading = false;
+    }
+
+    private async Task RunBackupAsync()
+    {
+        if (_server is null || _isRunningJob)
+        {
+            return;
+        }
+
+        _errorMessage = null;
+        _isRunningJob = true;
+        StateHasChanged();
+
+        try
+        {
+            var enqueueResponse = await WorkerApi.EnqueueBackupAsync(_server.Id, CancellationToken.None);
+            if (!enqueueResponse.IsSuccess || enqueueResponse.Value is null)
+            {
+                _errorMessage = AdminApiErrorDisplay.Describe(enqueueResponse.Error, enqueueResponse.StatusCode);
+                return;
+            }
+
+            var pollResult = await JobPoller.PollToTerminalAsync(
+                WorkerApi,
+                enqueueResponse.Value.JobId,
+                pollInterval: TimeSpan.FromSeconds(1),
+                timeout: TimeSpan.FromMinutes(2),
+                onProgress: response =>
+                {
+                    _job = response;
+                    InvokeAsync(StateHasChanged);
+                    return Task.CompletedTask;
+                },
+                CancellationToken.None);
+
+            if (!pollResult.IsSuccess || pollResult.Value is null)
+            {
+                _errorMessage = AdminApiErrorDisplay.Describe(pollResult.Error, pollResult.StatusCode);
+                _job = pollResult.Value;
+                return;
+            }
+
+            _job = pollResult.Value;
+        }
+        finally
+        {
+            _isRunningJob = false;
+        }
+    }
+
+    private static string TrimLog(string? logBlob)
+    {
+        if (string.IsNullOrWhiteSpace(logBlob))
+        {
+            return "(no log output available)";
+        }
+
+        const int maxLength = 2000;
+        return logBlob.Length <= maxLength
+            ? logBlob
+            : $"{logBlob[..maxLength]}\n... (truncated in admin UI)";
+    }
+}
