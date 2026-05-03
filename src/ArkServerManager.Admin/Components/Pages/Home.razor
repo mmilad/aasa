@@ -1,0 +1,71 @@
+@page "/"
+
+<PageTitle>Servers</PageTitle>
+
+<h1>Servers</h1>
+
+@if (!string.IsNullOrWhiteSpace(_errorMessage))
+{
+    <div class="alert alert-error">@_errorMessage</div>
+}
+
+@if (_isLoading)
+{
+    <p>Loading servers...</p>
+}
+else if (_servers.Count == 0)
+{
+    <p>No servers registered yet.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>State</th>
+                <th>Game Port</th>
+                <th>Query Port</th>
+                <th>RCON Port</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var server in _servers)
+            {
+                <tr>
+                    <td>@server.Name</td>
+                    <td>@server.State</td>
+                    <td>@server.GamePort</td>
+                    <td>@server.QueryPort</td>
+                    <td>@server.RconPort</td>
+                    <td><a href="@($"/servers/{server.Id:D}")">Details</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private bool _isLoading = true;
+    private string? _errorMessage;
+    private readonly List<ServerSummaryResponse> _servers = [];
+
+    [Inject]
+    public WorkerApiClient WorkerApi { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await WorkerApi.ListServersAsync(CancellationToken.None);
+        if (!response.IsSuccess || response.Value is null)
+        {
+            _errorMessage = AdminApiErrorDisplay.Describe(response.Error, response.StatusCode);
+            _isLoading = false;
+            return;
+        }
+
+        _servers.Clear();
+        _servers.AddRange(response.Value.Items);
+        _isLoading = false;
+    }
+}

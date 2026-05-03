@@ -7,6 +7,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{E87B4A71-D1C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArkServerManager.Worker", "src\ArkServerManager.Worker\ArkServerManager.Worker.csproj", "{18CB9B5B-FA5E-42C6-BF0F-CC43BECAF1AA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArkServerManager.Admin", "src\ArkServerManager.Admin\ArkServerManager.Admin.csproj", "{F3EF2620-8CAF-4B64-BA09-7CEA24BF4D02}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{9828D1E2-1DF2-4DD2-81FE-48CF2F6EADC8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArkServerManager.Worker.Tests", "tests\ArkServerManager.Worker.Tests\ArkServerManager.Worker.Tests.csproj", "{D0012B96-4522-4599-8E2A-A2051169425B}"
@@ -24,6 +26,10 @@ Global
 		{18CB9B5B-FA5E-42C6-BF0F-CC43BECAF1AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{18CB9B5B-FA5E-42C6-BF0F-CC43BECAF1AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{18CB9B5B-FA5E-42C6-BF0F-CC43BECAF1AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3EF2620-8CAF-4B64-BA09-7CEA24BF4D02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3EF2620-8CAF-4B64-BA09-7CEA24BF4D02}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3EF2620-8CAF-4B64-BA09-7CEA24BF4D02}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3EF2620-8CAF-4B64-BA09-7CEA24BF4D02}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D0012B96-4522-4599-8E2A-A2051169425B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D0012B96-4522-4599-8E2A-A2051169425B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D0012B96-4522-4599-8E2A-A2051169425B}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -31,6 +37,7 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{18CB9B5B-FA5E-42C6-BF0F-CC43BECAF1AA} = {E87B4A71-D1C1-4571-9AE2-9802778F2E52}
+		{F3EF2620-8CAF-4B64-BA09-7CEA24BF4D02} = {E87B4A71-D1C1-4571-9AE2-9802778F2E52}
 		{D0012B96-4522-4599-8E2A-A2051169425B} = {9828D1E2-1DF2-4DD2-81FE-48CF2F6EADC8}
 	EndGlobalSection
 EndGlobal
