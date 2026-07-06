@@ -12,7 +12,7 @@
 - **Configuration**: `Microsoft.Extensions.Configuration` (JSON + env vars).
 - **Logging**: `Microsoft.Extensions.Logging` with structured JSON file sink TBD at implementation (Serilog optional).
 - **HTTP**: ASP.NET Core Minimal APIs for REST v1.
-- **Operator UI**: **Blazor Web App (Interactive Server)** in a **separate** ASP.NET Core project calling the Worker REST API — [ADR-0004](../decisions/ADR-0004-local-admin-ui-blazor.md). Normative **not** a first-party TypeScript SPA.
+- **Operator UI**: **Next.js** admin app (App Router) calling the Worker REST API via **server-side** handlers that inject `X-Api-Key` — [ADR-0005](../decisions/ADR-0005-local-admin-ui-nextjs.md). Normative **not** a public Internet dashboard.
 - **Database**: **EF Core** with **SQLite default** and **PostgreSQL optional** via configuration — see [persistence-providers.md](persistence-providers.md) and [persistence-mvp.md](persistence-mvp.md).
 - **SteamCMD interaction**: `System.Diagnostics.Process` with async stdout/stderr reads.
 
@@ -23,5 +23,5 @@
 ## Sources
 
 - [ADR-0001](../decisions/ADR-0001-host-and-deployment.md)
-- [ADR-0004](../decisions/ADR-0004-local-admin-ui-blazor.md)
+- [ADR-0005](../decisions/ADR-0005-local-admin-ui-nextjs.md)
 - [.NET Worker Service overview](https://learn.microsoft.com/en-us/dotnet/core/extensions/windows-service)

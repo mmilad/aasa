@@ -6,3 +6,39 @@ dotnet-install.sh
 **/obj/
 appsettings.Local.json
 *.user
+
+# Node / monorepo
+node_modules/
+.pnpm-store/
+.turbo/
+**/.next/
+**/out/
+**/dist/
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# Testing / coverage
+coverage/
+
+# Env and secrets (local only)
+.env*
+!.env*.example
+
+# OS / editor
+.DS_Store
+*.pem
+*.tsbuildinfo
+next-env.d.ts
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Vercel
+.vercel

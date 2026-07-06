@@ -56,7 +56,7 @@ LLM-maintained catalog: each substantive page, one-line summary, category. Updat
 | [wiki/decisions/ADR-0001-host-and-deployment.md](wiki/decisions/ADR-0001-host-and-deployment.md) | Windows + C# accepted | adr |
 | [wiki/decisions/ADR-0002-plugin-integration.md](wiki/decisions/ADR-0002-plugin-integration.md) | Plugins deferred | adr |
 | [wiki/decisions/ADR-0003-secrets-and-exposure.md](wiki/decisions/ADR-0003-secrets-and-exposure.md) | Loopback + API key | adr |
-| [wiki/decisions/ADR-0004-local-admin-ui-blazor.md](wiki/decisions/ADR-0004-local-admin-ui-blazor.md) | Local Blazor admin UI (.NET single language) | adr |
+| [wiki/decisions/ADR-0005-local-admin-ui-nextjs.md](wiki/decisions/ADR-0005-local-admin-ui-nextjs.md) | Local Next.js admin UI (server-side Worker auth) | adr |
 
 ## Product
 
@@ -71,7 +71,7 @@ LLM-maintained catalog: each substantive page, one-line summary, category. Updat
 | [product/06-config-ini.md](product/06-config-ini.md) | INI paths + allowlist MVP | product |
 | [product/07-backups.md](product/07-backups.md) | Backups + backup-mvp | product |
 | [product/08-api.md](product/08-api.md) | API layer + api-v1-mvp | product |
-| [product/09-ui.md](product/09-ui.md) | Local Blazor admin (ADR-0004) | product |
+| [product/09-ui.md](product/09-ui.md) | Local Next.js admin (ADR-0005) | product |
 | [product/10-integrations.md](product/10-integrations.md) | Integrations | product |
 | [product/11-security.md](product/11-security.md) | Security | product |
 | [product/12-deployment.md](product/12-deployment.md) | Windows Service + operator checklist | product |

@@ -2,7 +2,7 @@
 
 # Overview
 
-ARK Ascended Server Manager is a **control plane** for dedicated ASA servers: lifecycle (install/update/start/stop), configuration, mods, backups, observability, and an **API-first** surface with a **local Blazor** operator UI ([ADR-0004](decisions/ADR-0004-local-admin-ui-blazor.md)) — not a public Internet dashboard.
+ARK Ascended Server Manager is a **control plane** for dedicated ASA servers: lifecycle (install/update/start/stop), configuration, mods, backups, observability, and an **API-first** surface with a **local Next.js** operator UI ([ADR-0005](decisions/ADR-0005-local-admin-ui-nextjs.md)) — not a public Internet dashboard.
 
 ## Planning stance
 
@@ -13,7 +13,7 @@ ARK Ascended Server Manager is a **control plane** for dedicated ASA servers: li
 - **ASA pitfalls**: [risks/asa-known-issues.md](risks/asa-known-issues.md).
 - **Execution order (when coding)**: [implementation-backbone.md](implementation-backbone.md).
 - **Open queue**: [open-questions.md](open-questions.md) (resolved items archived there).
-- **Decisions**: ADRs under [decisions/](decisions/) — start with [ADR-0001](decisions/ADR-0001-host-and-deployment.md), [ADR-0003](decisions/ADR-0003-secrets-and-exposure.md), [ADR-0004](decisions/ADR-0004-local-admin-ui-blazor.md), [ADR-0002](decisions/ADR-0002-plugin-integration.md).
+- **Decisions**: ADRs under [decisions/](decisions/) — start with [ADR-0001](decisions/ADR-0001-host-and-deployment.md), [ADR-0003](decisions/ADR-0003-secrets-and-exposure.md), [ADR-0005](decisions/ADR-0005-local-admin-ui-nextjs.md), [ADR-0002](decisions/ADR-0002-plugin-integration.md).
 - **Risks / threat model**: [risks/threat-model-stub.md](risks/threat-model-stub.md).
 - Pre-split outline snapshot (immutable): [raw/legacy-ark-server-manager-plan-monolith.md](../raw/legacy-ark-server-manager-plan-monolith.md).
 
@@ -44,7 +44,7 @@ ARK Ascended Server Manager is a **control plane** for dedicated ASA servers: li
 - **Data**: `%ProgramData%\ArkServerManager\` default root; per-server tree per [architecture/data-layout-windows.md](architecture/data-layout-windows.md).
 - **Persistence**: SQLite for registry/state ([product/00-foundations.md](../product/00-foundations.md)).
 - **API security**: loopback default + `X-Api-Key` ([ADR-0003](decisions/ADR-0003-secrets-and-exposure.md)).
-- **Operator UI**: **Blazor Web App (Interactive Server)**, separate project, consumes REST v1 ([ADR-0004](decisions/ADR-0004-local-admin-ui-blazor.md)).
+- **Operator UI**: **Next.js admin app** (server-side Worker integration), separate project, consumes REST v1 ([ADR-0005](decisions/ADR-0005-local-admin-ui-nextjs.md)).
 - **Plugins / external UI contributions**: **deferred** post-MVP trigger ([ADR-0002](decisions/ADR-0002-plugin-integration.md)).
 
 ```mermaid

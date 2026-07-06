@@ -1,0 +1,13 @@
+{
+  "name": "arkservermanager",
+  "private": true,
+  "packageManager": "pnpm@10.16.0",
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint"
+  },
+  "devDependencies": {
+    "turbo": "^2.9.12"
+  }
+}

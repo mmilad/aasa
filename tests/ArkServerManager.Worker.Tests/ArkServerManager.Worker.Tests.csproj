@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\ArkServerManager.Worker\ArkServerManager.Worker.csproj" />
+    <ProjectReference Include="..\..\apps\ArkServerManager.Worker\ArkServerManager.Worker.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,7 +1,8 @@
 # ADR-0004: Local admin UI — Blazor (.NET single language)
 
-- **Status**: accepted  
+- **Status**: superseded  
 - **Date**: 2026-05-02  
+- **Superseded by**: [ADR-0005-local-admin-ui-nextjs](ADR-0005-local-admin-ui-nextjs.md)
 
 ## Context
 

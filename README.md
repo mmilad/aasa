@@ -1,30 +1,55 @@
 # arkservermanager
 
-Planning and future implementation for an **ARK: Survival Ascended** dedicated server manager.
+Planning and implementation for an **ARK: Survival Ascended** dedicated server manager (Windows-first MVP).
 
 **Start here:** [plan/README.md](plan/README.md)
 
-## Local admin UI (Phase C5) quickstart
+## Repository layout
 
-The repository now includes a local Blazor admin project at `src/ArkServerManager.Admin`.
+| Path | Purpose |
+|------|---------|
+| [plan/](plan/) | Normative product and architecture docs |
+| [openapi/](openapi/) | OpenAPI artifact for Worker `/api/v1` |
+| [apps/ArkServerManager.Worker/](apps/ArkServerManager.Worker/) | Worker service (REST API, jobs, SteamCMD/process integration) |
+| [apps/web/](apps/web/) | Next.js operator UI (loopback-first; proxies to Worker server-side) |
+| [tests/ArkServerManager.Worker.Tests/](tests/ArkServerManager.Worker.Tests/) | .NET unit / integration tests |
 
-Default loopback ports:
+## .NET (Worker + tests)
 
-- Worker API: `http://127.0.0.1:5080`
-- Admin UI: `http://127.0.0.1:5081`
+From the repository root:
 
-Run order for development:
-
-1. Start Worker (`src/ArkServerManager.Worker`).
-2. Configure Admin Worker API key (must match Worker `ApiAuth:ApiKey`) via user-secrets or environment variables.
-3. Start Admin (`src/ArkServerManager.Admin`) and open `http://127.0.0.1:5081`.
-
-Example dev secret setup:
-
-```bash
-dotnet user-secrets --project src/ArkServerManager.Admin set "Worker:ApiKey" "your-dev-api-key"
+```powershell
+dotnet build ArkServerManager.sln
+dotnet test ArkServerManager.sln
 ```
 
-```bash
-export ARKMGR_ADMIN_Worker__ApiKey="your-dev-api-key"
+Default Worker API URL in dev is typically `http://127.0.0.1:5080` (see Worker `appsettings.Development.json` and [plan/wiki/architecture/asa-process-runbook.md](plan/wiki/architecture/asa-process-runbook.md)).
+
+## Next.js admin UI
+
+Requires **Node 20+** and [pnpm](https://pnpm.io/).
+
+```powershell
+pnpm install
+pnpm dev
 ```
+
+The web app reads **`WORKER_BASE_URL`** and **`WORKER_API_KEY`** at runtime (server-side only; do not prefix the key with `NEXT_PUBLIC_`). Example:
+
+```powershell
+$env:WORKER_BASE_URL = "http://127.0.0.1:5080/"
+$env:WORKER_API_KEY = "your-dev-api-key"
+pnpm dev
+```
+
+Copy [apps/web/.env.local.example](apps/web/.env.local.example) to `apps/web/.env.local` if you prefer file-based env for Next.
+
+Production build (from repo root):
+
+```powershell
+pnpm build
+```
+
+## Agent / contributor bootstrap
+
+See [AGENTS.md](AGENTS.md) for spec-first workflow and coding order.

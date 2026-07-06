@@ -27,3 +27,11 @@ Added [api-v1-mvp.md](wiki/requirements/api-v1-mvp.md), [persistence-mvp.md](wik
 ## [2026-05-02] session | ADR-0004 — local Blazor admin UI + MVP scope alignment
 
 Accepted [ADR-0004](wiki/decisions/ADR-0004-local-admin-ui-blazor.md) (Blazor Web App Interactive Server, separate project, loopback-first, no normative TS SPA). Updated [mvp-scope.md](wiki/requirements/mvp-scope.md) (in-scope item 8, non-goals, success criterion 5), [implementation-backbone.md](wiki/implementation-backbone.md) (Phase C5 after C4), [tech-stack.md](wiki/architecture/tech-stack.md), [product/08-api.md](product/08-api.md), [product/09-ui.md](product/09-ui.md), [index.md](index.md), [done.md](done.md).
+
+## [2026-05-11] session | ADR-0005 — Next.js local admin UI (POC) and MVP alignment
+
+Accepted [ADR-0005](wiki/decisions/ADR-0005-local-admin-ui-nextjs.md) (Next.js operator UI with server-side Worker API key injection, loopback-first). Updated [mvp-scope.md](wiki/requirements/mvp-scope.md) (local admin UI direction and success criterion 5), [implementation-backbone.md](wiki/implementation-backbone.md) (Phase C5), [tech-stack.md](wiki/architecture/tech-stack.md), [product/09-ui.md](product/09-ui.md), [wiki/overview.md](wiki/overview.md), [index.md](index.md), and linked the previous ADR-0004 as superseded.
+
+## [2026-05-11] session | Monorepo layout — `plan/` + `apps/` + `tests/` at repo root
+
+Relocated normative docs to repo-root [`plan/`](README.md), OpenAPI artifact to [`openapi/`](../openapi/), .NET Worker to [`apps/ArkServerManager.Worker/`](../apps/ArkServerManager.Worker/), tests to [`tests/ArkServerManager.Worker.Tests/`](../tests/ArkServerManager.Worker.Tests/), Next.js admin to [`apps/web/`](../apps/web/); pnpm workspace + Turbo at repository root. Removed superseded Blazor `ArkServerManager.Admin` sources from the solution. Updated [product/09-ui.md](product/09-ui.md) UI path wording and root [README.md](../README.md).
